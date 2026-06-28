@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>滇池长效治理，绿色种子深入人心</title>
+    <!-- Swiper CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: #eaf5f0;
+            color: #1e3f36;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .swiper-container {
+            width: 100%;
+            height: 100vh;
+            background: #eaf5f0;
+        }
+        .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 18px 30px;
+            overflow-y: auto;
+            background: #eaf5f0;
+            position: relative;
+        }
+        /* 自定义滚动条 */
+        .swiper-slide::-webkit-scrollbar {
+            width: 4px;
+        }
+        .swiper-slide::-webkit-scrollbar-thumb {
+            background: #2e9b6e;
+            border-radius: 10px;
+        }
+
+        /* ===== 分页指示器 ===== */
+        .swiper-pagination-bullet {
+            background: #2e9b6e;
+            opacity: 0.5;
+        }
+        .swiper-pagination-bullet-active {
+            opacity: 1;
+            background: #0d5c44;
+        }
+
+        /* ===== 通用 ===== */
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0d5c44;
+            margin-bottom: 12px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .page-sub {
+            font-size: 14px;
+            color: #4d7a6b;
+            text-align: center;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .green-bar {
+            width: 60px;
+            height: 4px;
+            background: #2e9b6e;
+            border-radius: 4px;
+            margin: 0 auto 16px;
+        }
+
+        /* ===== 第一页：封面 ===== */
+        .slide-1 {
+            background: linear-gradient(145deg, #0d5c44 0%, #1a8a6a 100%);
+            color: #fff;
+            justify-content: center;
+            text-align: center;
+        }
+        .slide-1 .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 20px;
+        }
+        .slide-1 h1 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .slide-1 .sub {
+            font-size: 16px;
+            opacity: 0.9;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 14px;
+            display: inline-block;
+        }
+        .slide-1 .sub span {
+            background: rgba(255,255,255,0.12);
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        /* 地图元素（封面背景装饰） */
+        .map-decoration {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .map-decoration svg {
+            width: 100%;
+            height: 100%;
+            fill: #fff;
+        }
+
+        /* ===== 第二页：数据总览 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin: 8px auto;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,40,30,0.06);
+            border: 1px solid #d4ede4;
+        }
+        .stat-card .num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0d5c44;
+        }
+        .stat-card .num small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #4d7a6b;
+        }
+        .stat-card .label {
+            font-size: 13px;
+            color: #4d6b62;
+            margin-top: 4px;
+        }
+        .stat-card .tag {
+            font-size: 11px;
+            color: #7a9a8b;
+            background: #eaf3ef;
+            padding: 1px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        /* 地图卡片 */
+        .map-container {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 12px 0 8px;
+            box-shadow: 0 2px 12px rgba(0,40,30,0.06);
+            border: 1px solid #d4ede4;
+            width: 100%;
+            max-width: 400px;
+        }
+        .map-container svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        .map-caption {
+            font-size: 12px;
+            color: #6f8f80;
+            text-align: center;
+            padding-top: 4px;
+        }
+
+        /* ===== 第三、四页：图表 ===== */
+        .chart-wrapper {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 16px 12px 12px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 2px 16px rgba(0,40,30,0.06);
+            border: 1px solid #d4ede4;
+            margin-top: 4px;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+        .chart-wrapper .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e3f36;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        .chart-wrapper .chart-sub {
+            font-size: 12px;
+            color: #6f8f80;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .chart-box {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+        .chart-insight {
+            background: #f0f7f3;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1e3f36;
+            border-left: 3px solid #1a8a6a;
+            line-height: 1.6;
+        }
+        .chart-insight strong {
+            color: #0d5c44;
+        }
+
+        /* 点击弹窗（模态框） */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px 24px 20px;
+            max-width: 320px;
+            width: 80%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-box h3 {
+            font-size: 20px;
+            color: #0d5c44;
+            margin-bottom: 8px;
+        }
+        .modal-box p {
+            font-size: 14px;
+            color: #2a403a;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        .modal-box .btn-close {
+            background: #1a8a6a;
+            color: #fff;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 40px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* ===== 底部导航提示 ===== */
+        .swipe-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #8aaa9b;
+            opacity: 0.7;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 400px) {
+            .slide-1 h1 { font-size: 26px; }
+            .stat-card .num { font-size: 24px; }
+            .chart-box { height: 180px; }
+        }
+        @media (min-width: 600px) {
+            .chart-box { height: 260px; }
+            .stats-grid { max-width: 480px; gap: 16px; }
+            .stat-card { padding: 20px 12px; }
+            .stat-card .num { font-size: 34px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Swiper容器 ===== -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+
+            <!-- ========== 第一页：封面 ========== -->
+            <div class="swiper-slide slide-1">
+                <div class="hero-badge">🌊 滇池 · 长效治理</div>
+                <h1>滇池长效治理<br>绿色种子深入人心</h1>
+                <div class="sub"><span>从百支市民河长到万千志愿力量</span></div>
+                <!-- 地图装饰（滇池轮廓） -->
+                <div class="map-decoration">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M70,40 Q100,20 130,40 Q160,60 170,100 Q180,140 150,170 Q120,190 90,180 Q60,170 40,140 Q20,110 30,70 Q40,40 70,40 Z" />
+                        <circle cx="100" cy="100" r="10" fill="none" stroke="#fff" stroke-width="2" />
+                        <circle cx="80" cy="80" r="4" fill="#fff" opacity="0.5" />
+                        <circle cx="120" cy="120" r="4" fill="#fff" opacity="0.5" />
+                        <circle cx="70" cy="130" r="3" fill="#fff" opacity="0.5" />
+                        <circle cx="140" cy="70" r="3" fill="#fff" opacity="0.5" />
+                    </svg>
+                </div>
+                <div class="swipe-hint">👆 向上滑动</div>
+            </div>
+
+            <!-- ========== 第二页：核心数据 + 地图 ========== -->
+            <div class="swiper-slide">
+                <div class="page-title">📊 志愿力量 · 关键数据</div>
+                <div class="green-bar"></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="num"><span class="num-count" data-target="100">0</span> <small>支</small></div>
+                        <div class="label">市民河长团队</div>
+                        <div class="tag">2019起固定</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num"><span class="num-count" data-target="610">0</span><small>+</small></div>
+                        <div class="label">年度活动场次</div>
+                        <div class="tag">2025峰值</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num"><span class="num-count" data-target="3200">0</span><small>+</small></div>
+                        <div class="label">年度参与人次</div>
+                        <div class="tag">2025新高</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num"><span class="num-count" data-target="71.3">0</span> <small>吨</small></div>
+                        <div class="label">年均垃圾清理</div>
+                        <div class="tag">2022–2024</div>
+                    </div>
+                </div>
+                <!-- 滇池地图 -->
+                <div class="map-container">
+                    <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+                        <!-- 滇池轮廓 (简化) -->
+                        <path d="M80,40 Q120,10 180,30 Q230,50 250,100 Q270,150 230,190 Q190,220 140,210 Q90,200 60,160 Q30,120 40,70 Q50,30 80,40 Z" fill="#d4ede4" stroke="#2e9b6e" stroke-width="2" />
+                        <!-- 入滇河流 -->
+                        <path d="M40,70 Q60,80 70,90" stroke="#2e9b6e" stroke-width="2" fill="none" stroke-dasharray="4" />
+                        <path d="M230,50 Q210,70 200,80" stroke="#2e9b6e" stroke-width="2" fill="none" stroke-dasharray="4" />
+                        <!-- 标注点 -->
+                        <circle cx="120" cy="110" r="6" fill="#0d5c44" />
+                        <text x="125" y="125" font-size="8" fill="#0d5c44" font-weight="bold">市民河长</text>
+                        <circle cx="180" cy="140" r="6" fill="#1a8a6a" />
+                        <text x="185" y="155" font-size="8" fill="#1a8a6a" font-weight="bold">绿色昆明</text>
+                        <circle cx="80" cy="150" r="6" fill="#d68a3c" />
+                        <text x="85" y="165" font-size="8" fill="#d68a3c" font-weight="bold">洛龙河</text>
+                        <circle cx="200" cy="80" r="6" fill="#3d8fbf" />
+                        <text x="205" y="95" font-size="8" fill="#3d8fbf" font-weight="bold">高校力量</text>
+                    </svg>
+                    <div class="map-caption">📍 滇池 · 志愿守护网络</div>
+                </div>
+                <div class="swipe-hint" style="position:relative; margin-top:6px;">👆 继续滑动</div>
+            </div>
+
+            <!-- ========== 第三页：活动场次 & 参与人次 ========== -->
+            <div class="swiper-slide">
+                <div class="page-title">📈 活动场次 &amp; 参与人次</div>
+                <div class="green-bar"></div>
+                <div class="chart-wrapper" id="chartWrap1">
+                    <div class="chart-title">四个发展阶段对比</div>
+                    <div class="chart-sub">从初创零散到高质量创新</div>
+                    <div class="chart-box">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                    <div class="chart-insight">
+                        💡 <strong>2019年关键拐点</strong>：百支标准化团队落地，活动场次从不足50场跃升至500场，参与人次从300+增长至1067人。
+                    </div>
+                </div>
+                <div class="swipe-hint" style="position:relative; margin-top:4px;">👆 点击柱子查看详情</div>
+            </div>
+
+            <!-- ========== 第四页：垃圾清理 & 志愿时长 ========== -->
+            <div class="swiper-slide">
+                <div class="page-title">⏳ 清理产出 &amp; 志愿时长</div>
+                <div class="green-bar"></div>
+                <div class="chart-wrapper" id="chartWrap2">
+                    <div class="chart-title">治理成效与人力投入同步增长</div>
+                    <div class="chart-sub">垃圾清理量在扩容期达峰值</div>
+                    <div class="chart-box">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                    <div class="chart-insight">
+                        💡 <strong>治理升级</strong>：2022–2024年垃圾清理量达峰值 <strong>71.33吨</strong>；2025年后向水质监测、生态调研等多元化转型。
+                    </div>
+                </div>
+                <div style="margin-top:8px; text-align:center; font-size:13px; color:#4d7a6b;">
+                    🌱 绿色观念 · 深入人心
+                </div>
+                <div class="swipe-hint" style="position:relative; margin-top:4px;">👆 点击柱子查看详情</div>
+            </div>
+
+        </div>
+        <!-- 分页指示器 -->
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- ===== 模态框 ===== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h3 id="modalTitle">详情</h3>
+            <p id="modalDesc">描述内容</p>
+            <button class="btn-close" id="modalClose">知道了</button>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- 脚本 -->
+    <!-- ============================== -->
+    <script>
+        // 注册 datalabels 插件
+        Chart.register(ChartDataLabels);
+
+        // ---------- 初始化 Swiper ----------
+        const swiper = new Swiper('.swiper-container', {
+            direction: 'vertical',
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            mousewheel: true,
+            keyboard: true,
+            effect: 'slide',
+            speed: 600,
+        });
+
+        // ---------- 数据 ----------
+        const labels = ['初创\n2009–2018', '爆发\n2019–2021', '扩容\n2022–2024', '创新\n2025–2026'];
+        const activityData = [40, 500, 600, 665];
+        const participantData = [765, 1067, 2600, 3450];
+        const garbageData = [4.25, 42, 71.33, 51];
+        const hoursData = [140, 1750, 2100, 2135];
+
+        // ---------- 图表1 ----------
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        const chart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '活动场次',
+                    data: activityData,
+                    backgroundColor: 'rgba(61, 143, 191, 0.75)',
+                    borderColor: '#3d8fbf',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    barPercentage: 0.35,
+                    order: 1,
+                }, {
+                    label: '参与人次',
+                    data: participantData,
+                    backgroundColor: 'rgba(46, 155, 110, 0.75)',
+                    borderColor: '#2e9b6e',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    barPercentage: 0.35,
+                    order: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { usePointStyle: true, pointStyle: 'circle', padding: 12, font: { size: 11 }, color: '#1e3f36' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let val = context.parsed.y;
+                                return label + ': ' + val + (context.dataset.label === '参与人次' ? ' 人' : ' 场');
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: '#1e3f36',
+                        font: { size: 10, weight: '600' },
+                        offset: 1,
+                        formatter: function(value, context) {
+                            return value;
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
+                    x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const datasetIndex = elements[0].datasetIndex;
+                        const label = this.data.labels[index];
+                        const value = this.data.datasets[datasetIndex].data[index];
+                        const datasetLabel = this.data.datasets[datasetIndex].label;
+                        let phase = '';
+                        if (index === 0) phase = '初创零散期（2009-2018）';
+                        else if (index === 1) phase = '标准化爆发期（2019-2021）';
+                        else if (index === 2) phase = '扩容增长期（2022-2024）';
+                        else if (index === 3) phase = '高质量创新期（2025-2026）';
+                        let extra = '';
+                        if (datasetLabel === '活动场次') {
+                            if (index === 0) extra = '全年仅32~48场，无常态化巡护';
+                            else if (index === 1) extra = '百支团队落地，场次跃升至500场';
+                            else if (index === 2) extra = '亲子志愿加入，场次增至600场';
+                            else if (index === 3) extra = '多元活动，场次达665场（预估）';
+                        } else if (datasetLabel === '参与人次') {
+                            if (index === 0) extra = '最高仅1200人次，规模很小';
+                            else if (index === 1) extra = '增至1067人次，翻倍增长';
+                            else if (index === 2) extra = '突破2600人次，是2019年2.4倍';
+                            else if (index === 3) extra = '达3450人次（预估），再创新高';
+                        }
+                        showModal(datasetLabel + ' - ' + phase, '数值：' + value + (datasetLabel === '参与人次' ? ' 人' : ' 场') + '<br>' + extra);
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // ---------- 图表2 ----------
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        const chart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '垃圾清理 (吨)',
+                    data: garbageData,
+                    backgroundColor: 'rgba(214, 138, 60, 0.75)',
+                    borderColor: '#d68a3c',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    barPercentage: 0.35,
+                    order: 1,
+                }, {
+                    label: '志愿时长 (小时)',
+                    data: hoursData,
+                    backgroundColor: 'rgba(139, 111, 158, 0.75)',
+                    borderColor: '#8b6f9e',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    barPercentage: 0.35,
+                    order: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { usePointStyle: true, pointStyle: 'circle', padding: 12, font: { size: 11 }, color: '#1e3f36' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let val = context.parsed.y;
+                                return label + ': ' + val + (context.dataset.label.includes('垃圾') ? ' 吨' : ' 小时');
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: '#1e3f36',
+                        font: { size: 10, weight: '600' },
+                        offset: 1,
+                        formatter: function(value, context) {
+                            return value;
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
+                    x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const datasetIndex = elements[0].datasetIndex;
+                        const label = this.data.labels[index];
+                        const value = this.data.datasets[datasetIndex].data[index];
+                        const datasetLabel = this.data.datasets[datasetIndex].label;
+                        let phase = '';
+                        if (index === 0) phase = '初创零散期（2009-2018）';
+                        else if (index === 1) phase = '标准化爆发期（2019-2021）';
+                        else if (index === 2) phase = '扩容增长期（2022-2024）';
+                        else if (index === 3) phase = '高质量创新期（2025-2026）';
+                        let extra = '';
+                        if (datasetLabel === '垃圾清理 (吨)') {
+                            if (index === 0) extra = '年清理仅3.5~5吨，力度弱';
+                            else if (index === 1) extra = '暴涨至42吨，大规模净滩';
+                            else if (index === 2) extra = '峰值71.33吨，人工清理拉满';
+                            else if (index === 3) extra = '回落至51吨，重心转型';
+                        } else if (datasetLabel === '志愿时长 (小时)') {
+                            if (index === 0) extra = '仅112~168小时，投入微乎其微';
+                            else if (index === 1) extra = '跃至1750小时，增长14倍';
+                            else if (index === 2) extra = '稳定2100小时/年，持续加码';
+                            else if (index === 3) extra = '峰值2135小时，再创新高';
+                        }
+                        showModal(datasetLabel + ' - ' + phase, '数值：' + value + (datasetLabel === '垃圾清理 (吨)' ? ' 吨' : ' 小时') + '<br>' + extra);
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // ---------- 模态框 ----------
+        function showModal(title, desc) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDesc').innerHTML = desc;
+            document.getElementById('modal').classList.add('active');
+        }
+        document.getElementById('modalClose').addEventListener('click', function() {
+            document.getElementById('modal').classList.remove('active');
+        });
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        // ---------- 数字滚动 ----------
+        function animateNumbers() {
+            const counters = document.querySelectorAll('.num-count');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                if (isNaN(target)) return;
+                const isFloat = target % 1 !== 0;
+                const duration = 1800;
+                const startTime = performance.now();
+
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - (1 - progress) * (1 - progress);
+                    let currentVal = eased * target;
+                    if (!isFloat) currentVal = Math.floor(currentVal);
+                    else currentVal = parseFloat(currentVal.toFixed(1));
+                    counter.textContent = currentVal;
+                    if (progress < 1) requestAnimationFrame(update);
+                    else counter.textContent = target;
+                }
+                requestAnimationFrame(update);
+            });
+        }
+
+        // ---------- 页面加载完成 ----------
+        window.addEventListener('load', function() {
+            setTimeout(animateNumbers, 600);
+        });
+
+        // 浮动效果在CSS中已经实现，图表容器有 float 动画
+
+        console.log('🌊 滇池长效治理 H5 已加载 (四页、地图、点击互动)');
+    </script>
+
+</body>
+</html>
